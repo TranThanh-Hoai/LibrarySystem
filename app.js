@@ -6,6 +6,8 @@ var logger = require('morgan');
 let mongoose = require('mongoose')
 
 var indexRouter = require('./routes/index');
+var bookRoutes = require('./routes/books');
+
 
 var app = express();
 
@@ -20,6 +22,22 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
+// API Routes
+app.use('/api/v1/books', bookRoutes);
+//localhost:3000/users
+//app.use('/api/v1/users', require('./routes/users'));
+
+mongoose.connect('mongodb://localhost:27017/LibrarySystem');
+mongoose.connection.on('connected', function () {
+  console.log("connected");
+})
+mongoose.connection.on('disconnected', function () {
+  console.log("disconnected");
+})
+mongoose.connection.on('disconnecting', function () {
+  console.log("disconnecting");
+})
 app.use('/api/loans', require('./routes/loans'));
 
 require('dotenv').config();
