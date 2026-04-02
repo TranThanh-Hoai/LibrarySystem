@@ -6,7 +6,8 @@ var logger = require('morgan');
 let mongoose = require('mongoose')
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var bookRoutes = require('./routes/books');
+
 
 var app = express();
 
@@ -21,6 +22,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+
+// API Routes
+app.use('/api/v1/books', bookRoutes);
 //localhost:3000/users
 //app.use('/api/v1/users', require('./routes/users'));
 
