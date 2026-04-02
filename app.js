@@ -6,6 +6,8 @@ var logger = require('morgan');
 let mongoose = require('mongoose')
 
 var indexRouter = require('./routes/index');
+var bookRoutes = require('./routes/books');
+
 
 var app = express();
 
@@ -20,6 +22,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/users'));
+
+// API Routes
+app.use('/api/v1/books', bookRoutes);
 //localhost:3000/users
 //app.use('/api/v1/users', require('./routes/users'));
 
@@ -33,6 +40,24 @@ mongoose.connection.on('disconnected', function () {
 mongoose.connection.on('disconnecting', function () {
   console.log("disconnecting");
 })
+app.use('/api/loans', require('./routes/loans'));
+
+require('dotenv').config();
+const mongoURI = process.env.MONGO_URI;
+
+mongoose.connect(mongoURI);
+mongoose.connection.on('connected', () => {
+  console.log("✅ MongoDB Atlas: Connected");
+});
+mongoose.connection.on('error', (err) => {
+  console.log("❌ MongoDB Connection Error: " + err);
+});
+mongoose.connection.on('disconnected', () => {
+  console.log("⚠️ MongoDB: Disconnected");
+});
+mongoose.connection.on('disconnecting', () => {
+  console.log("⏳ MongoDB: Disconnecting...");
+});
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
