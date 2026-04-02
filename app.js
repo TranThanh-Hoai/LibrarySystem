@@ -20,8 +20,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-//localhost:3000/users
-//app.use('/api/v1/users', require('./routes/users'));
+//localhost:3000/books
+app.use('/books', require('./routes/books'));
 
 mongoose.connect('mongodb://localhost:27017/LibrarySystem');
 mongoose.connection.on('connected', function () {
