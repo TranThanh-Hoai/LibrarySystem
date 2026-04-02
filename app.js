@@ -38,6 +38,24 @@ mongoose.connection.on('disconnected', function () {
 mongoose.connection.on('disconnecting', function () {
   console.log("disconnecting");
 })
+app.use('/api/loans', require('./routes/loans'));
+
+require('dotenv').config();
+const mongoURI = process.env.MONGO_URI;
+
+mongoose.connect(mongoURI);
+mongoose.connection.on('connected', () => {
+  console.log("✅ MongoDB Atlas: Connected");
+});
+mongoose.connection.on('error', (err) => {
+  console.log("❌ MongoDB Connection Error: " + err);
+});
+mongoose.connection.on('disconnected', () => {
+  console.log("⚠️ MongoDB: Disconnected");
+});
+mongoose.connection.on('disconnecting', () => {
+  console.log("⏳ MongoDB: Disconnecting...");
+});
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
