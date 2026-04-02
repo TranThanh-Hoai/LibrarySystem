@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const loanController = require('../controllers/loanController');
+const loansController = require('../controller/loansController');
 
 router.post('/return-book', async function (req, res) {
   try {
-    const result = await loanController.returnBook(req.body);
+    const result = await loansController.returnBook(req.body);
     return res.status(result.statusCode).json({
       success: result.success,
       message: result.message,
