@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const loansController = require('../controller/loansController');
+const loanController = require('../controller/loanController');
 
 router.post('/return-book', async function (req, res) {
   try {
@@ -17,9 +18,19 @@ router.post('/return-book', async function (req, res) {
     });
   }
 });
-const loanController = require('../controller/loanController');
 
-// Route for borrowing books: POST /api/loans/borrow
-router.post('/borrow', loanController.borrowBook);
+router.post('/borrow', async (req, res) => {
+    try {
+        const result = await loanController.borrowBook(req);
+
+        return res.status(201).json(result);
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message
+        });
+    }
+});
 
 module.exports = router;
