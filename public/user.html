@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Library System</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="page">
+        <header class="topbar">
+            <div class="title-group">
+                <h1>User Dashboard</h1>
+                <p class="subtitle">Tim sach, muon/tra sach, theo doi thong bao realtime de thao tac nhanh.</p>
+            </div>
+            <div class="topbar-actions">
+                <span id="sessionInfo" class="pill">-</span>
+                <span id="socketStatus" class="pill offline">Offline</span>
+                <button id="logoutBtn" class="btn btn-soft" type="button">Dang xuat</button>
+            </div>
+        </header>
+
+        <section class="overview">
+            <article class="card">
+                <div class="label">Sach hien thi</div>
+                <div id="metricBooks" class="value">0</div>
+                <div class="hint">Da loc theo tim kiem + the loai</div>
+            </article>
+            <article class="card">
+                <div class="label">Phieu muon cua toi</div>
+                <div id="metricLoans" class="value">0</div>
+                <div class="hint">Lay tu endpoint my-loans</div>
+            </article>
+            <article class="card">
+                <div class="label">Thong bao chua doc</div>
+                <div id="metricNotifications" class="value">0</div>
+                <div class="hint">Cap nhat realtime qua socket</div>
+            </article>
+            <article class="card">
+                <div class="label">Tinh trang ket noi</div>
+                <div id="metricSocket" class="value">Offline</div>
+                <div class="hint">Dang cho ket noi</div>
+            </article>
+        </section>
+
+        <section class="panel-grid">
+            <section class="panel col-8">
+                <div class="panel-head">
+                    <div>
+                        <h2>Kho sach</h2>
+                        <p id="bookSummary" class="muted">Dang tai...</p>
+                    </div>
+                    <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tai lai</button>
+                </div>
+                <div class="filters">
+                    <label>Tim kiem<input id="searchInput" type="search" placeholder="Ten sach, tac gia, ISBN..."></label>
+                    <label>The loai<select id="categoryFilter"><option value="">Tat ca</option></select></label>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tieu de</th>
+                                <th>ISBN</th>
+                                <th>Tac gia</th>
+                                <th>The loai</th>
+                                <th>NXB</th>
+                                <th>Con lai</th>
+                                <th>Thao tac</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel col-4">
+                <div class="panel-head">
+                    <h2>Muon sach</h2>
+                </div>
+                <form id="borrowForm" class="form-grid single">
+                    <label>Book ID<input id="borrowBookId" type="text" required></label>
+                    <label>Han tra<input id="borrowDueDate" type="date" required></label>
+                    <label>Tinh trang luc muon<input id="borrowCondition" type="text" placeholder="New"></label>
+                    <button class="btn" type="submit">Gui yeu cau muon</button>
+                </form>
+                <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+                <div class="panel-head" style="margin-bottom:10px;">
+                    <h3>Tra sach</h3>
+                </div>
+                <form id="returnForm" class="form-grid single">
+                    <label>Loan ID<input id="returnLoanId" type="text" required></label>
+                    <label>Book ID<input id="returnBookId" type="text" required></label>
+                    <label>Tinh trang khi tra<input id="returnCondition" type="text" placeholder="Good"></label>
+                    <button class="btn btn-soft" type="submit">Tra sach</button>
+                </form>
+            </section>
+
+            <section class="panel col-7">
+                <div class="panel-head">
+                    <div>
+                        <h2>Phieu muon cua toi</h2>
+                        <p id="loanSummary" class="muted">Dang tai...</p>
+                    </div>
+                    <button id="refreshLoansBtn" class="btn btn-soft" type="button">Tai lai</button>
+                </div>
+                <div id="loansList" class="list"></div>
+            </section>
+
+            <section class="panel col-5">
+                <div class="panel-head">
+                    <div>
+                        <h2>Thong bao & Realtime</h2>
+                        <p id="notificationSummary" class="muted">Dang tai...</p>
+                    </div>
+                    <button id="refreshNotificationsBtn" class="btn btn-soft" type="button">Tai lai</button>
+                </div>
+                <div id="socketEvents" class="list socket-log"></div>
+                <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+                <div id="notificationsList" class="list"></div>
+            </section>
+        </section>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/shared.js"></script>
+    <script src="/js/user.js"></script>
+</body>
+</html>
