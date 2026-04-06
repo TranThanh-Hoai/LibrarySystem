@@ -3,10 +3,8 @@ const router = express.Router();
 const booksController = require('../controller/booksController');
 const bookController = require('../controller/bookController');
 const upload = require('../config/multerConfig');
+const { authenticateToken, authorizeRole } = require('../utils/auth');
 
-// --- Routes using bookController (refactored) ---
-
-// Get all books with pagination and search
 router.get('/', async (req, res) => {
   try {
     const result = await bookController.getAllBooks(req.query);
@@ -24,8 +22,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// Create new book
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, authorizeRole(['admin']), async (req, res) => {
   try {
     const book = await bookController.createBook(req.body);
     return res.status(201).json({
@@ -42,8 +39,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update book
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateToken, authorizeRole(['admin']), async (req, res) => {
   try {
     const book = await bookController.updateBook(req.params.id, req.body);
     return res.status(200).json({
@@ -60,8 +56,7 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete book
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateToken, authorizeRole(['admin']), async (req, res) => {
   try {
     const book = await bookController.deleteBook(req.params.id);
     return res.status(200).json({
@@ -78,8 +73,7 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Upload book cover
-router.post('/:bookId/cover', upload.single('cover'), async (req, res) => {
+router.post('/:bookId/cover', authenticateToken, authorizeRole(['admin']), upload.single('cover'), async (req, res) => {
   try {
     const result = await bookController.uploadBookCover(req.params.bookId, req.file);
     return res.status(200).json({
@@ -96,9 +90,6 @@ router.post('/:bookId/cover', upload.single('cover'), async (req, res) => {
   }
 });
 
-// --- Existing Routes using booksController (kept as is) ---
-
-// Route tìm kiếm sách
 router.get('/search', async (req, res) => {
   try {
     const books = await booksController.searchBooks(req.query);
@@ -110,7 +101,6 @@ router.get('/search', async (req, res) => {
   }
 });
 
-// Route xem chi tiết sách
 router.get('/:id', async (req, res) => {
   try {
     const book = await booksController.getBookDetails(req.params.id);

@@ -1,9 +1,11 @@
 const Book = require('../schemas/Book');
 const Publisher = require('../schemas/Publisher');
 const Category = require('../schemas/Category');
+const Author = require('../schemas/Author');
 const Upload = require('../schemas/Upload');
 const path = require('path');
 const { getIO } = require('../config/socketConfig');
+const { createAndSendNotification } = require('./notificationController');
 
 /**
  * Handle errors with status codes
@@ -37,6 +39,7 @@ const getAllBooks = async ({ page = 1, limit = 10, search = '' }) => {
     .find(filter)
     .populate('publisher_id', 'name address phone')
     .populate('category_id', 'name description')
+    .populate('author_id', 'name bio')
     .skip(skip)
     .limit(parseInt(limit))
     .sort({ createdAt: -1 });
@@ -59,7 +62,8 @@ const getBookById = async (id) => {
   const book = await Book
     .findById(id)
     .populate('publisher_id', 'name address phone')
-    .populate('category_id', 'name description');
+    .populate('category_id', 'name description')
+    .populate('author_id', 'name bio');
 
   if (!book) {
     throw createError('Book not found', 404);
@@ -73,11 +77,11 @@ const getBookById = async (id) => {
  * Required fields: isbn, title, publisher_id, category_id, published_year, quantity, available_copies
  */
 const createBook = async (bookData) => {
-  const { isbn, title, publisher_id, category_id, published_year, quantity, available_copies } = bookData;
+  const { isbn, title, publisher_id, category_id, author_id, published_year, quantity, available_copies } = bookData;
 
   // Validation
-  if (!isbn || !title || !publisher_id || !category_id) {
-    throw createError('Missing required fields: isbn, title, publisher_id, category_id', 400);
+  if (!isbn || !title || !publisher_id || !category_id || !author_id) {
+    throw createError('Missing required fields: isbn, title, publisher_id, category_id, author_id', 400);
   }
 
   // Check if ISBN already exists
@@ -98,12 +102,19 @@ const createBook = async (bookData) => {
     throw createError('Category not found', 404);
   }
 
+  // Verify author exists
+  const author = await Author.findById(author_id);
+  if (!author) {
+    throw createError('Author not found', 404);
+  }
+
   // Create new book
   const newBook = new Book({
     isbn,
     title,
     publisher_id,
     category_id,
+    author_id,
     published_year: published_year || new Date().getFullYear(),
     quantity: quantity || 0,
     available_copies: available_copies || 0
@@ -115,15 +126,15 @@ const createBook = async (bookData) => {
   const populatedBook = await Book
     .findById(savedBook._id)
     .populate('publisher_id', 'name address phone')
-    .populate('category_id', 'name description');
+    .populate('category_id', 'name description')
+    .populate('author_id', 'name bio');
 
-  // Emit New Book Event via WebSocket
-  try {
-    const io = getIO();
-    io.emit('newBook', { title: populatedBook.title });
-  } catch (error) {
-    console.error('⚠️ Socket.io emitting error:', error.message);
-  }
+  // Create and Send Broadcast Notification via WebSocket & DB
+  await createAndSendNotification(
+    null, 
+    `Sách mới: "${populatedBook.title}" vừa được thêm vào thư viện.`, 
+    'Sách mới'
+  );
 
   return populatedBook;
 };
@@ -152,17 +163,19 @@ const updateBook = async (id, updateData) => {
   }
 
   // Validate category if provided
-  if (updateData.category_id) {
-    const category = await Category.findById(updateData.category_id);
-    if (!category) {
-      throw createError('Category not found', 404);
+  // Validate author if provided
+  if (updateData.author_id) {
+    const author = await Author.findById(updateData.author_id);
+    if (!author) {
+      throw createError('Author not found', 404);
     }
   }
 
   const updatedBook = await Book
     .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
     .populate('publisher_id', 'name address phone')
-    .populate('category_id', 'name description');
+    .populate('category_id', 'name description')
+    .populate('author_id', 'name bio');
 
   if (!updatedBook) {
     throw createError('Book not found', 404);

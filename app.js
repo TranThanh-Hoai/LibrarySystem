@@ -24,15 +24,17 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', indexRouter);
 //localhost:3000/books
-app.use('/books', require('./routes/books'));
+app.use('/api/books', require('./routes/books'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 
-// API Routes
-app.use('/api/v1/books', bookRoutes);
 //localhost:3000/users
 //app.use('/api/v1/users', require('./routes/users'));
 app.use('/api/loans', require('./routes/loans'));
+app.use('/api/authors', require('./routes/authors'));
+app.use('/api/categories', require('./routes/categories'));
+app.use('/api/publishers', require('./routes/publishers'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 require('dotenv').config();
 

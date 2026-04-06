@@ -20,6 +20,11 @@ let bookSchema = mongoose.Schema({
     ref: 'category',
     required: true
   },
+  author_id: {
+    type: mongoose.Types.ObjectId,
+    ref: 'author',
+    required: true
+  },
   published_year: {
     type: Number
   },

@@ -31,6 +31,10 @@ const init = (server) => {
   io.on('connection', (socket) => {
     console.log(`✅ User connected: ${socket.user.username} (${socket.id})`);
 
+    // Join a private room for this specific user
+    socket.join(socket.user.userId);
+    console.log(`🏠 User ${socket.user.username} joined room: ${socket.user.userId}`);
+
     socket.on('disconnect', () => {
       console.log(`❌ User disconnected: ${socket.id}`);
     });
