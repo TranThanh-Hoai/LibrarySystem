@@ -20,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/', indexRouter);
 //localhost:3000/books
@@ -31,32 +32,60 @@ app.use('/api/users', require('./routes/users'));
 app.use('/api/v1/books', bookRoutes);
 //localhost:3000/users
 //app.use('/api/v1/users', require('./routes/users'));
-
-mongoose.connect('mongodb://localhost:27017/LibrarySystem');
-mongoose.connection.on('connected', function () {
-  console.log("connected");
-})
-mongoose.connection.on('disconnected', function () {
-  console.log("disconnected");
-})
-mongoose.connection.on('disconnecting', function () {
-  console.log("disconnecting");
-})
 app.use('/api/loans', require('./routes/loans'));
 
 require('dotenv').config();
-const mongoURI = process.env.MONGO_URI;
 
-mongoose.connect(mongoURI);
-mongoose.connection.on('connected', () => {
-  console.log("✅ MongoDB Atlas: Connected");
-});
+const { seedRoles } = require('./config/initDB');
+
+// URI
+const atlasURI = process.env.MONGO_URI;
+const localURI = "mongodb://localhost:27017/LibrarySystem";
+
+// ưu tiên Atlas nếu có, không thì local
+let currentURI = atlasURI || localURI;
+
+// connect function
+async function connectDB(uri) {
+  try {
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000
+    });
+
+    console.log(
+      uri === localURI
+        ? "✅ MongoDB Local: Connected"
+        : "✅ MongoDB Atlas: Connected"
+    );
+
+    await seedRoles();
+
+  } catch (err) {
+    console.log("❌ Connect lỗi:", err.message);
+
+    // nếu đang dùng Atlas thì fallback local
+    if (uri === atlasURI) {
+      console.log("🔄 Switching to LOCAL DB...");
+      return connectDB(localURI);
+    } else {
+      console.log("💥 Local cũng lỗi luôn, thoát...");
+      process.exit(1);
+    }
+  }
+}
+
+// chạy connect
+connectDB(currentURI);
+
+// events
 mongoose.connection.on('error', (err) => {
-  console.log("❌ MongoDB Connection Error: " + err);
+  console.log("❌ MongoDB Error:", err.message);
 });
+
 mongoose.connection.on('disconnected', () => {
   console.log("⚠️ MongoDB: Disconnected");
 });
+
 mongoose.connection.on('disconnecting', () => {
   console.log("⏳ MongoDB: Disconnecting...");
 });
