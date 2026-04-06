@@ -51,15 +51,17 @@ exports.searchBooks = async ({ query, category, publisher, author } = {}) => {
   }
 
   return Book.find(filter)
+    .populate('upload_id', 'file_name file_path uploaded_at')
     .populate('publisher_id', 'name')
     .populate('category_id', 'name')
     .populate('author_id', 'name')
-    .select('isbn title published_year quantity available_copies publisher_id category_id author_id');
+    .select('isbn title published_year quantity available_copies publisher_id category_id author_id upload_id cover_url');
 };
 
 // Xem chi tiết sách
 exports.getBookDetails = async (id) => {
   const book = await Book.findById(id)
+    .populate('upload_id', 'file_name file_path uploaded_at')
     .populate('publisher_id', 'name address phone')
     .populate('category_id', 'name description')
     .populate('author_id', 'name bio');
