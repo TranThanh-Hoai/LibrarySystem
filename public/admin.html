@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -11,35 +11,35 @@
         <header class="topbar">
             <div class="title-group">
                 <h1>Admin Dashboard</h1>
-                <p class="subtitle">Quan ly sach, nguoi dung, theo doi phieu muon va thong bao realtime.</p>
+                <p class="subtitle">Quản lý sách, người dùng, theo dõi phiếu mượn và thông báo realtime.</p>
             </div>
             <div class="topbar-actions">
                 <span id="sessionInfo" class="pill">-</span>
                 <span id="socketStatus" class="pill offline">Offline</span>
-                <button id="logoutBtn" class="btn btn-soft" type="button">Dang xuat</button>
+                <button id="logoutBtn" class="btn btn-soft" type="button">Đăng xuất</button>
             </div>
         </header>
 
         <section class="overview">
             <article class="card">
-                <div class="label">Sach</div>
+                <div class="label">Sách</div>
                 <div id="metricBooks" class="value">0</div>
-                <div class="hint">Tong so sach trong danh sach hien thi</div>
+                <div class="hint">Tổng số sách trong danh sách hiển thị</div>
             </article>
             <article class="card">
-                <div class="label">Nguoi dung</div>
+                <div class="label">Người dùng</div>
                 <div id="metricUsers" class="value">0</div>
-                <div class="hint">Tong tai khoan trong he thong</div>
+                <div class="hint">Tổng tài khoản trong hệ thống</div>
             </article>
             <article class="card">
-                <div class="label">Phieu muon</div>
+                <div class="label">Phiếu mượn</div>
                 <div id="metricLoans" class="value">0</div>
-                <div class="hint">Tat ca phieu muon hien co</div>
+                <div class="hint">Tất cả phiếu mượn hiện có</div>
             </article>
             <article class="card">
-                <div class="label">Thong bao chua doc</div>
+                <div class="label">Thông báo chưa đọc</div>
                 <div id="metricNotifications" class="value">0</div>
-                <div class="hint">Thong bao danh cho tai khoan admin</div>
+                <div class="hint">Thông báo dành cho tài khoản admin</div>
             </article>
         </section>
 
@@ -47,26 +47,26 @@
             <section class="panel col-8">
                 <div class="panel-head">
                     <div>
-                        <h2>Danh sach sach</h2>
-                        <p id="bookSummary" class="muted">Dang tai...</p>
+                        <h2>Danh sách sách</h2>
+                        <p id="bookSummary" class="muted">Đang tải...</p>
                     </div>
-                    <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div class="filters">
-                    <label>Tim kiem<input id="searchInput" type="search" placeholder="Ten sach, ISBN, tac gia..."></label>
-                    <label>The loai<select id="categoryFilter"><option value="">Tat ca</option></select></label>
+                    <label>Tìm kiếm<input id="searchInput" type="search" placeholder="Tên sách, ISBN, tác giả..."></label>
+                    <label>Thể loại<select id="categoryFilter"><option value="">Tất cả</option></select></label>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tieu de</th>
+                                <th>Tiêu đề</th>
                                 <th>ISBN</th>
-                                <th>Tac gia</th>
-                                <th>The loai</th>
+                                <th>Tác giả</th>
+                                <th>Thể loại</th>
                                 <th>NXB</th>
-                                <th>Ton kho</th>
-                                <th>Thao tac</th>
+                                <th>Tồn kho</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="booksTableBody"></tbody>
@@ -77,27 +77,27 @@
             <section class="panel col-4">
                 <div class="panel-head">
                     <div>
-                        <h2>Quan ly sach</h2>
-                        <p class="muted">Them, sua, xoa sach va upload anh bia.</p>
+                        <h2>Quản lý sách</h2>
+                        <p class="muted">Thêm, sửa, xóa sách và upload ảnh bìa.</p>
                     </div>
                 </div>
                 <form id="bookForm" class="form-grid single">
                     <input id="bookId" type="hidden">
-                    <label>Tieu de<input id="bookTitle" type="text" required></label>
+                    <label>Tiêu đề<input id="bookTitle" type="text" required></label>
                     <label>ISBN<input id="bookIsbn" type="text" required></label>
-                    <label>Tac gia<select id="bookAuthor" required></select></label>
-                    <label>The loai<select id="bookCategory" required></select></label>
-                    <label>Nha xuat ban<select id="bookPublisher" required></select></label>
-                    <label>Nam xuat ban<input id="bookYear" type="number" min="0"></label>
-                    <label>Tong so luong<input id="bookQuantity" type="number" min="0" required></label>
-                    <label>So luong kha dung<input id="bookAvailableCopies" type="number" min="0" required></label>
-                    <label>Anh bia<input id="bookCover" type="file" accept="image/*"></label>
+                    <label>Tác giả<select id="bookAuthor" required></select></label>
+                    <label>Thể loại<select id="bookCategory" required></select></label>
+                    <label>Nhà xuất bản<select id="bookPublisher" required></select></label>
+                    <label>Năm xuất bản<input id="bookYear" type="number" min="0"></label>
+                    <label>Tổng số lượng<input id="bookQuantity" type="number" min="0" required></label>
+                    <label>Số lượng khả dụng<input id="bookAvailableCopies" type="number" min="0" required></label>
+                    <label>Ảnh bìa<input id="bookCover" type="file" accept="image/*"></label>
                     <p id="coverInfo" class="muted"></p>
                     <img id="bookCoverPreview" class="cover-preview hidden" alt="Book cover preview">
                     <div class="actions">
-                        <button class="btn" type="submit">Luu sach</button>
-                        <button id="newBookBtn" class="btn btn-soft" type="button">Form moi</button>
-                        <button id="deleteBookBtn" class="btn btn-danger hidden" type="button">Xoa sach</button>
+                        <button class="btn" type="submit">Lưu sách</button>
+                        <button id="newBookBtn" class="btn btn-soft" type="button">Form mới</button>
+                        <button id="deleteBookBtn" class="btn btn-danger hidden" type="button">Xóa sách</button>
                     </div>
                 </form>
             </section>
@@ -105,33 +105,33 @@
             <section class="panel col-7">
                 <div class="panel-head">
                     <div>
-                        <h2>Quan ly nguoi dung</h2>
+                        <h2>Quản lý người dùng</h2>
                         <p class="muted">CRUD user theo role admin.</p>
                     </div>
-                    <button id="refreshUsersBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshUsersBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <form id="userForm" class="form-grid">
                     <input id="userId" type="hidden">
-                    <label>Ho ten<input id="userFullName" type="text" required></label>
+                    <label>Họ tên<input id="userFullName" type="text" required></label>
                     <label>Username<input id="userUsername" type="text" required></label>
                     <label>Email<input id="userEmail" type="email" required></label>
-                    <label>Vai tro<select id="userRole"><option value="user">user</option><option value="admin">admin</option></select></label>
-                    <label>Mat khau (bat buoc khi tao moi)<input id="userPassword" type="password"></label>
+                    <label>Vai trò<select id="userRole"><option value="user">user</option><option value="admin">admin</option></select></label>
+                    <label>Mật khẩu (bắt buộc khi tạo mới)<input id="userPassword" type="password"></label>
                     <div class="actions" style="align-items:end;">
-                        <button class="btn" type="submit">Luu user</button>
-                        <button id="newUserBtn" class="btn btn-soft" type="button">Form moi</button>
-                        <button id="deleteUserBtn" class="btn btn-danger hidden" type="button">Xoa user</button>
+                        <button class="btn" type="submit">Lưu user</button>
+                        <button id="newUserBtn" class="btn btn-soft" type="button">Form mới</button>
+                        <button id="deleteUserBtn" class="btn btn-danger hidden" type="button">Xóa user</button>
                     </div>
                 </form>
                 <div class="table-wrap" style="margin-top:12px;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Ho ten</th>
+                                <th>Họ tên</th>
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Role</th>
-                                <th>Thao tac</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="usersTableBody"></tbody>
@@ -142,25 +142,25 @@
             <section class="panel col-5">
                 <div class="panel-head">
                     <div>
-                        <h2>Tra sach nhanh</h2>
-                        <p class="muted">Admin co the xu ly tra sach cho moi nguoi dung.</p>
+                        <h2>Trả sách nhanh</h2>
+                        <p class="muted">Admin có thể xử lý trả sách cho mọi người dùng.</p>
                     </div>
                 </div>
                 <form id="returnForm" class="form-grid single">
                     <label>Loan ID<input id="returnLoanId" type="text" required></label>
                     <label>Book ID<input id="returnBookId" type="text" required></label>
-                    <label>Tinh trang khi tra<input id="returnCondition" type="text" placeholder="Good"></label>
-                    <button class="btn" type="submit">Xac nhan tra sach</button>
+                    <label>Tình trạng khi trả<input id="returnCondition" type="text" placeholder="Good"></label>
+                    <button class="btn" type="submit">Xác nhận trả sách</button>
                 </form>
             </section>
 
             <section class="panel col-7">
                 <div class="panel-head">
                     <div>
-                        <h2>Danh sach phieu muon</h2>
-                        <p id="loanSummary" class="muted">Dang tai...</p>
+                        <h2>Danh sách phiếu mượn</h2>
+                        <p id="loanSummary" class="muted">Đang tải...</p>
                     </div>
-                    <button id="refreshLoansBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshLoansBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div id="loansList" class="list"></div>
             </section>
@@ -168,10 +168,10 @@
             <section class="panel col-5">
                 <div class="panel-head">
                     <div>
-                        <h2>Thong bao & Realtime</h2>
-                        <p id="notificationSummary" class="muted">Dang tai...</p>
+                        <h2>Thông báo & Realtime</h2>
+                        <p id="notificationSummary" class="muted">Đang tải...</p>
                     </div>
-                    <button id="refreshNotificationsBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshNotificationsBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div class="list socket-log" id="socketEvents"></div>
                 <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">

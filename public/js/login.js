@@ -1,10 +1,10 @@
-﻿document.addEventListener("DOMContentLoaded", function initLogin() {
+document.addEventListener("DOMContentLoaded", function initLogin() {
     const app = window.LibraryApp;
     app.routeIfSignedIn();
 
     const params = new URLSearchParams(window.location.search);
     if (params.get("registered") === "1") {
-        app.showToast("Dang ky thanh cong, moi ban dang nhap", "success");
+        app.showToast("Đăng ký thành công, mời bạn đăng nhập", "success");
     }
 
     const form = document.getElementById("loginForm");
@@ -22,12 +22,12 @@
             });
 
             app.setSession(payload.token, payload.user);
-            app.showToast("Dang nhap thanh cong", "success");
+            app.showToast("Đăng nhập thành công", "success");
 
             const target = payload.user.role === "admin" ? "/admin.html" : "/user.html";
             window.location.href = target;
         } catch (error) {
-            app.showToast(error.message || "Dang nhap that bai", "error");
+            app.showToast(error.message || "Đăng nhập thất bại", "error");
         }
     });
 });

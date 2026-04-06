@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function initRegister() {
+document.addEventListener("DOMContentLoaded", function initRegister() {
     const app = window.LibraryApp;
     app.routeIfSignedIn();
 
@@ -19,12 +19,12 @@
                 })
             });
 
-            app.showToast("Dang ky thanh cong", "success");
+            app.showToast("Đăng ký thành công", "success");
             setTimeout(function redirectAfterRegister() {
                 window.location.href = "/login.html?registered=1";
             }, 500);
         } catch (error) {
-            app.showToast(error.message || "Dang ky that bai", "error");
+            app.showToast(error.message || "Đăng ký thất bại", "error");
         }
     });
 });

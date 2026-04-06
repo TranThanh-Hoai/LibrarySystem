@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function initAdminDashboard() {
+document.addEventListener("DOMContentLoaded", function initAdminDashboard() {
     const app = window.LibraryApp;
     const session = app.requireAuth("admin");
     if (!session) return;
@@ -85,7 +85,7 @@
     function setSocketStatus(status) {
         state.socketStatus = status;
         el.socketStatus.className = "pill " + status;
-        el.socketStatus.textContent = status === "online" ? "Online" : status === "connecting" ? "Dang ket noi" : "Offline";
+        el.socketStatus.textContent = status === "online" ? "Online" : status === "connecting" ? "Đang kết nối" : "Offline";
     }
 
     function addSocketEvent(title, detail) {
@@ -96,7 +96,7 @@
 
     function renderSocketEvents() {
         if (!state.socketEvents.length) {
-            el.socketEvents.innerHTML = '<div class="empty">Chua co su kien ket noi.</div>';
+            el.socketEvents.innerHTML = '<div class="empty">Chưa có sự kiện kết nối.</div>';
             return;
         }
 
@@ -105,7 +105,7 @@
                 '<article class="list-item">' +
                 '<h4>' + app.escapeHtml(item.title) + '</h4>' +
                 '<div class="meta">' +
-                '<span>' + app.escapeHtml(item.detail || "Khong co chi tiet") + '</span>' +
+                '<span>' + app.escapeHtml(item.detail || "Không có chi tiết") + '</span>' +
                 '<span>' + app.toVNDateTime(item.at) + '</span>' +
                 '</div>' +
                 '</article>';
@@ -132,7 +132,7 @@
     }
 
     function renderCategoryFilter() {
-        const options = ['<option value="">Tat ca</option>']
+        const options = ['<option value="">Tất cả</option>']
             .concat(state.categories.map(function mapCategory(item) {
                 return '<option value="' + item._id + '">' + app.escapeHtml(item.name) + '</option>';
             }))
@@ -142,19 +142,19 @@
     }
 
     function renderBookFormOptions() {
-        el.bookAuthor.innerHTML = ['<option value="">Chon tac gia</option>'].concat(
+        el.bookAuthor.innerHTML = ['<option value="">Chọn tác giả</option>'].concat(
             state.authors.map(function mapAuthor(item) {
                 return '<option value="' + item._id + '">' + app.escapeHtml(item.name) + '</option>';
             })
         ).join("");
 
-        el.bookCategory.innerHTML = ['<option value="">Chon the loai</option>'].concat(
+        el.bookCategory.innerHTML = ['<option value="">Chọn thể loại</option>'].concat(
             state.categories.map(function mapCategory(item) {
                 return '<option value="' + item._id + '">' + app.escapeHtml(item.name) + '</option>';
             })
         ).join("");
 
-        el.bookPublisher.innerHTML = ['<option value="">Chon nha xuat ban</option>'].concat(
+        el.bookPublisher.innerHTML = ['<option value="">Chọn nhà xuất bản</option>'].concat(
             state.publishers.map(function mapPublisher(item) {
                 return '<option value="' + item._id + '">' + app.escapeHtml(item.name) + '</option>';
             })
@@ -163,11 +163,11 @@
 
     function renderBooks() {
         const filtered = getFilteredBooks();
-        el.bookSummary.textContent = "Tong " + filtered.length + " / " + state.books.length + " sach";
+        el.bookSummary.textContent = "Tổng " + filtered.length + " / " + state.books.length + " sách";
         updateMetrics();
 
         if (!filtered.length) {
-            el.booksTableBody.innerHTML = '<tr><td colspan="7"><div class="empty">Khong co sach phu hop bo loc.</div></td></tr>';
+            el.booksTableBody.innerHTML = '<tr><td colspan="7"><div class="empty">Không có sách phù hợp bộ lọc.</div></td></tr>';
             return;
         }
 
@@ -176,7 +176,7 @@
             const stockClass = available < 3 ? "tag low" : "tag";
             const cover = book.cover_url
                 ? '<img class="book-cover-inline" src="' + app.escapeHtml(book.cover_url) + '" alt="' + app.escapeHtml(book.title) + '">'
-                : '<span class="muted">Chua co anh bia</span>';
+                : '<span class="muted">Chưa có ảnh bìa</span>';
 
             return '' +
                 '<tr>' +
@@ -188,8 +188,8 @@
                 '<td><span class="' + stockClass + '">' + available + '/' + Number(book.quantity || 0) + '</span></td>' +
                 '<td>' +
                 '<div class="row-actions">' +
-                '<button class="btn btn-soft" type="button" onclick="window.AdminUI.editBook(\'' + book._id + '\')">Sua</button>' +
-                '<button class="btn btn-soft" type="button" onclick="window.AdminUI.fillReturnByBook(\'' + book._id + '\')">Tra nhanh</button>' +
+                '<button class="btn btn-soft" type="button" onclick="window.AdminUI.editBook(\'' + book._id + '\')">Sửa</button>' +
+                '<button class="btn btn-soft" type="button" onclick="window.AdminUI.fillReturnByBook(\'' + book._id + '\')">Trả nhanh</button>' +
                 '</div>' +
                 '</td>' +
                 '</tr>';
@@ -200,7 +200,7 @@
         updateMetrics();
 
         if (!state.users.length) {
-            el.usersTableBody.innerHTML = '<tr><td colspan="5"><div class="empty">Chua co tai khoan nao.</div></td></tr>';
+            el.usersTableBody.innerHTML = '<tr><td colspan="5"><div class="empty">Chưa có tài khoản nào.</div></td></tr>';
             return;
         }
 
@@ -212,24 +212,24 @@
                 '<td>' + app.escapeHtml(user.username) + '</td>' +
                 '<td>' + app.escapeHtml(user.email) + '</td>' +
                 '<td>' + app.escapeHtml(roleName) + '</td>' +
-                '<td><button class="btn btn-soft" type="button" onclick="window.AdminUI.editUser(\'' + user._id + '\')">Sua</button></td>' +
+                '<td><button class="btn btn-soft" type="button" onclick="window.AdminUI.editUser(\'' + user._id + '\')">Sửa</button></td>' +
                 '</tr>';
         }).join("");
     }
 
     function renderLoans() {
-        el.loanSummary.textContent = state.loans.length + " phieu muon";
+        el.loanSummary.textContent = state.loans.length + " phiếu mượn";
         updateMetrics();
 
         if (!state.loans.length) {
-            el.loansList.innerHTML = '<div class="empty">Chua co phieu muon nao.</div>';
+            el.loansList.innerHTML = '<div class="empty">Chưa có phiếu mượn nào.</div>';
             return;
         }
 
         el.loansList.innerHTML = state.loans.map(function mapLoan(loan) {
             const userInfo = loan.user_id
                 ? (loan.user_id.full_name || loan.user_id.username || "") + " - " + (loan.user_id.email || "")
-                : "Khong ro";
+                : "Không rõ";
 
             const details = (loan.details || []).map(function mapDetail(detail) {
                 const bookId = detail.book_id && detail.book_id._id ? detail.book_id._id : detail.book_id;
@@ -238,8 +238,8 @@
                     '<div class="meta" style="margin-top:6px;">' +
                     '<strong>' + app.escapeHtml(title) + '</strong>' +
                     '<span>Book ID: ' + app.escapeHtml(bookId) + '</span>' +
-                    '<span>Ngay tra: ' + app.toVNDate(detail.return_date) + '</span>' +
-                    '<button class="btn btn-soft" type="button" onclick="window.AdminUI.fillReturn(\'' + loan._id + '\', \'' + bookId + '\')">Dien vao form tra</button>' +
+                    '<span>Ngày trả: ' + app.toVNDate(detail.return_date) + '</span>' +
+                    '<button class="btn btn-soft" type="button" onclick="window.AdminUI.fillReturn(\'' + loan._id + '\', \'' + bookId + '\')">Điền vào form trả</button>' +
                     '</div>';
             }).join("");
 
@@ -247,10 +247,10 @@
                 '<article class="list-item">' +
                 '<h3>Loan ' + app.escapeHtml(loan._id) + '</h3>' +
                 '<div class="meta">' +
-                '<span>Nguoi muon: ' + app.escapeHtml(userInfo) + '</span>' +
-                '<span>Ngay muon: ' + app.toVNDate(loan.loan_date) + '</span>' +
-                '<span>Han tra: ' + app.toVNDate(loan.due_date) + '</span>' +
-                '<span>Trang thai: ' + app.escapeHtml(loan.status) + '</span>' +
+                '<span>Người mượn: ' + app.escapeHtml(userInfo) + '</span>' +
+                '<span>Ngày mượn: ' + app.toVNDate(loan.loan_date) + '</span>' +
+                '<span>Hạn trả: ' + app.toVNDate(loan.due_date) + '</span>' +
+                '<span>Trạng thái: ' + app.escapeHtml(loan.status) + '</span>' +
                 '</div>' +
                 details +
                 '</article>';
@@ -259,23 +259,23 @@
 
     function renderNotifications() {
         const unread = unreadCount();
-        el.notificationSummary.textContent = "Tong " + state.notifications.length + " thong bao, " + unread + " chua doc";
+        el.notificationSummary.textContent = "Tổng " + state.notifications.length + " thông báo, " + unread + " chưa đọc";
         updateMetrics();
 
         if (!state.notifications.length) {
-            el.notificationsList.innerHTML = '<div class="empty">Chua co thong bao.</div>';
+            el.notificationsList.innerHTML = '<div class="empty">Chưa có thông báo.</div>';
             return;
         }
 
         el.notificationsList.innerHTML = state.notifications.map(function mapNotification(item) {
             return '' +
                 '<article class="list-item">' +
-                '<h4>' + app.escapeHtml(item.type || "Thong bao") + '</h4>' +
+                '<h4>' + app.escapeHtml(item.type || "Thông báo") + '</h4>' +
                 '<div class="meta">' +
                 '<span>' + app.escapeHtml(item.message) + '</span>' +
-                '<span>Trang thai: ' + (item.is_read ? "Da doc" : "Chua doc") + '</span>' +
+                '<span>Trạng thái: ' + (item.is_read ? "Đã đọc" : "Chưa đọc") + '</span>' +
                 '<span>' + app.toVNDateTime(item.createdAt) + '</span>' +
-                (item.is_read ? "" : '<button class="btn btn-soft" type="button" onclick="window.AdminUI.markRead(\'' + item._id + '\')">Danh dau da doc</button>') +
+                (item.is_read ? "" : '<button class="btn btn-soft" type="button" onclick="window.AdminUI.markRead(\'' + item._id + '\')">Đánh dấu đã đọc</button>') +
                 '</div>' +
                 '</article>';
         }).join("");
@@ -383,7 +383,7 @@
             });
             const data = app.getData(created);
             savedId = data && data._id ? data._id : "";
-            app.showToast("Tao sach thanh cong", "success");
+            app.showToast("Tạo sách thành công", "success");
         }
 
         if (savedId && el.bookCover.files && el.bookCover.files[0]) {
@@ -393,7 +393,7 @@
                 method: "POST",
                 body: formData
             });
-            app.showToast("Upload anh bia thanh cong", "success");
+            app.showToast("Upload ảnh bìa thành công", "success");
         }
 
         await loadBooks();
@@ -403,12 +403,12 @@
     async function deleteBook() {
         const id = el.bookId.value;
         if (!id) {
-            app.showToast("Ban chua chon sach", "error");
+            app.showToast("Bạn chưa chọn sách", "error");
             return;
         }
-        if (!window.confirm("Xac nhan xoa sach nay?")) return;
+        if (!window.confirm("Xác nhận xóa sách này?")) return;
         await app.request("/books/" + id, { method: "DELETE" });
-        app.showToast("Da xoa sach", "success");
+        app.showToast("Đã xóa sách", "success");
         await loadBooks();
         resetBookForm();
     }
@@ -429,18 +429,18 @@
                 method: "PUT",
                 body: JSON.stringify(body)
             });
-            app.showToast("Cap nhat user thanh cong", "success");
+            app.showToast("Cập nhật user thành công", "success");
         } else {
             const password = el.userPassword.value;
             if (!password) {
-                app.showToast("Mat khau bat buoc khi tao user", "error");
+                app.showToast("Mật khẩu bắt buộc khi tạo user", "error");
                 return;
             }
             await app.request("/users", {
                 method: "POST",
                 body: JSON.stringify(Object.assign({}, body, { password: password }))
             });
-            app.showToast("Tao user thanh cong", "success");
+            app.showToast("Tạo user thành công", "success");
         }
 
         await loadUsers();
@@ -450,13 +450,13 @@
     async function deleteUser() {
         const id = el.userId.value;
         if (!id) {
-            app.showToast("Ban chua chon user", "error");
+            app.showToast("Bạn chưa chọn user", "error");
             return;
         }
-        if (!window.confirm("Xac nhan xoa user nay?")) return;
+        if (!window.confirm("Xác nhận xóa user này?")) return;
 
         await app.request("/users/" + id, { method: "DELETE" });
-        app.showToast("Da xoa user", "success");
+        app.showToast("Đã xóa user", "success");
         await loadUsers();
         resetUserForm();
     }
@@ -471,7 +471,7 @@
                 condition: el.returnCondition.value.trim()
             })
         });
-        app.showToast("Tra sach thanh cong", "success");
+        app.showToast("Trả sách thành công", "success");
         el.returnForm.reset();
         await Promise.all([loadBooks(), loadLoans(), loadNotifications()]);
     }
@@ -510,7 +510,7 @@
             try {
                 await handler(event);
             } catch (error) {
-                app.showToast(error.message || "Co loi xay ra", "error");
+                app.showToast(error.message || "Có lỗi xảy ra", "error");
             }
         };
     }
@@ -531,7 +531,7 @@
             el.bookYear.value = book.published_year || "";
             el.bookQuantity.value = Number(book.quantity || 0);
             el.bookAvailableCopies.value = Number(book.available_copies || 0);
-            el.coverInfo.textContent = book.cover_url ? "Anh hien tai: " + book.cover_url : "";
+            el.coverInfo.textContent = book.cover_url ? "Ảnh hiện tại: " + book.cover_url : "";
             if (book.cover_url) {
                 el.bookCoverPreview.src = book.cover_url;
                 el.bookCoverPreview.classList.remove("hidden");
@@ -556,7 +556,7 @@
             el.userRole.value = roleName;
             el.userPassword.value = "";
             el.deleteUserBtn.classList.remove("hidden");
-            el.userPassword.placeholder = "Bo trong neu khong doi mat khau";
+            el.userPassword.placeholder = "Bỏ trống nếu không đổi mật khẩu";
             window.scrollTo({ top: 0, behavior: "smooth" });
         },
         fillReturn: function fillReturn(loanId, bookId) {
@@ -570,7 +570,7 @@
         },
         markRead: function markRead(notificationId) {
             markRead(notificationId).catch(function onError(error) {
-                app.showToast(error.message || "Khong cap nhat duoc thong bao", "error");
+                app.showToast(error.message || "Không cập nhật được thông báo", "error");
             });
         }
     };
@@ -585,7 +585,7 @@
             function onNotification(notification) {
                 state.notifications.unshift(notification);
                 renderNotifications();
-                app.showToast(notification.message || "Co thong bao moi", "success");
+                app.showToast(notification.message || "Có thông báo mới", "success");
             },
             setSocketStatus,
             addSocketEvent
@@ -596,6 +596,6 @@
     }
 
     firstLoad().catch(function onInitError(error) {
-        app.showToast(error.message || "Khong tai duoc du lieu dashboard", "error");
+        app.showToast(error.message || "Không tải được dữ liệu dashboard", "error");
     });
 });
