@@ -51,7 +51,7 @@ Hệ thống quản lý thư viện (Library Management System) cung cấp các 
 {
   "full_name": "string",
   "email": "string",
-  "role_name": "admin" | "thủ thư" | "người dùng"
+  "role_name": "admin" | "người dùng"
 }
 ```
 
@@ -185,10 +185,46 @@ Hệ thống quản lý thư viện (Library Management System) cung cấp các 
 
 ---
 
-## 8. Thông báo (Notifications)
+## 9. Các Chức năng Chính (Core Features)
 
-### Lấy thông báo cá nhân
-**GET** `/api/notifications`
+- **Quản lý Thư viện Toàn diện:** CRUD cho Sách, Tác giả, Thể loại, Nhà xuất bản và Người dùng.
+- **Hệ thống Mượn/Trả sách:** 
+  - Quy trình mượn sách an toàn với kiểm soát số lượng tồn kho.
+  - Tính năng trả sách linh hoạt, tự động tính toán phí phạt nếu trễ hạn.
+- **Tìm kiếm & Phân trang:** Hỗ trợ tìm kiếm sách theo tiêu đề và phân trang dữ liệu API.
+- **Thông báo Real-time:** Hệ thống thông báo tức thời cho người dùng về các sự kiện quan trọng.
 
-### Đánh dấu đã đọc
-**PUT** `/api/notifications/:id/read`
+---
+
+## 10. Chi tiết Kỹ thuật (Technical Implementation)
+
+### 🔐 Xác thực & Phân quyền (Authentication & Authorization)
+- **JWT (JSON Web Token):** Sử dụng để bảo mật tất cả các API endpoint yêu cầu đăng nhập. Token được gửi qua header `Authorization: Bearer <token>`.
+- **Role-based Access Control (RBAC):** Hệ thống phân quyền rõ ràng giữa `admin` (quyền tối cao, quản lý hệ thống) và `user` (đăng ký mượn/tra sách, xem thông báo).
+- **Socket Authentication:** Kết nối WebSocket cũng được bảo vệ bằng middleware JWT, đảm bảo chỉ người dùng hợp lệ mới có thể nhận thông báo.
+
+### 🔌 WebSocket (Real-time Notifications)
+- **Công nghệ:** Sử dụng `Socket.io` để thiết lập kết nối song công (full-duplex).
+- **Chức năng:** 
+  - **Broadcast:** Thông báo cho tất cả người dùng khi có sách mới được thêm vào.
+  - **Private:** Gửi thông báo riêng tư đến từng người dùng khi mượn sách thành công hoặc có phát sinh khoản phạt trễ hạn.
+- **Phòng (Rooms):** Mỗi người dùng khi kết nối sẽ tự động tham gia vào một "phòng" riêng (dựa trên `userId`) để nhận thông báo cá nhân.
+
+### 🛡️ Giao dịch (Transactions)
+- **Mongoose Transactions:** Sử dụng trong tính năng **Mượn sách** (`borrowBook`). 
+- **Đảm bảo:** Việc trừ số lượng sách khả dụng (`available_copies`) và tạo bản ghi phiếu mượn (`Loan`, `LoanDetail`) phải diễn ra đồng thời. Nếu một bước thất bại, toàn bộ quá trình sẽ được hoàn tác (rollback) để tránh sai lệch dữ liệu kho.
+
+### 📂 Tải lên tệp (File Upload)
+- **Công nghệ:** Sử dụng middleware `Multer` để xử lý tải lên hình ảnh.
+- **Chức năng:** Admin có thể tải lên ảnh bìa cho sách. Tệp được lưu trữ cục bộ trong thư mục `/uploads/` và thông tin đường dẫn được lưu vào database để hiển thị trên giao diện.
+
+---
+
+## 11. Cấu trúc Thư mục Chính
+- `/controller`: Xử lý logic nghiệp vụ.
+- `/routes`: Định nghĩa các endpoint API.
+- `/schemas`: Định nghĩa cấu trúc dữ liệu MongoDB (Mongoose).
+- `/middleware`: Các bộ lọc xử lý (Auth, Upload).
+- `/config`: Cấu hình hệ thống (Database, Socket.io).
+- `/public`: Giao diện người dùng (HTML, CSS, JS).
+- `/uploads`: Nơi lưu trữ ảnh bìa sách.

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard | Library System</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="page">
+        <header class="topbar">
+            <div class="title-group">
+                <h1>User Dashboard</h1>
+                <p class="subtitle">Tìm sách, mượn/trả sách, theo dõi thông báo realtime để thao tác nhanh.</p>
+            </div>
+            <div class="topbar-actions">
+                <span id="sessionInfo" class="pill">-</span>
+                <span id="socketStatus" class="pill offline">Offline</span>
+                <button id="logoutBtn" class="btn btn-soft" type="button">Đăng xuất</button>
+            </div>
+        </header>
+
+        <section class="overview">
+            <article class="card">
+                <div class="label">Sách hiển thị</div>
+                <div id="metricBooks" class="value">0</div>
+                <div class="hint">Đã lọc theo tìm kiếm + thể loại</div>
+            </article>
+            <article class="card">
+                <div class="label">Phiếu mượn của tôi</div>
+                <div id="metricLoans" class="value">0</div>
+                <div class="hint">Lấy từ endpoint my-loans</div>
+            </article>
+            <article class="card">
+                <div class="label">Thông báo chưa đọc</div>
+                <div id="metricNotifications" class="value">0</div>
+                <div class="hint">Cập nhật realtime qua socket</div>
+            </article>
+            <article class="card">
+                <div class="label">Tình trạng kết nối</div>
+                <div id="metricSocket" class="value">Offline</div>
+                <div class="hint">Đang chờ kết nối</div>
+            </article>
+        </section>
+
+        <section class="panel-grid">
+            <section class="panel col-8">
+                <div class="panel-head">
+                    <div>
+                        <h2>Kho sách</h2>
+                        <p id="bookSummary" class="muted">Đang tải...</p>
+                    </div>
+                    <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tải lại</button>
+                </div>
+                <div class="filters">
+                    <label>Tìm kiếm<input id="searchInput" type="search" placeholder="Tên sách, tác giả, ISBN..."></label>
+                    <label>Thể loại<select id="categoryFilter"><option value="">Tất cả</option></select></label>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tiêu đề</th>
+                                <th>ISBN</th>
+                                <th>Tác giả</th>
+                                <th>Thể loại</th>
+                                <th>NXB</th>
+                                <th>Còn lại</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="panel col-4">
+                <div class="panel-head">
+                    <h2>Muon sach</h2>
+                </div>
+                <form id="borrowForm" class="form-grid single">
+                    <label>Book ID<input id="borrowBookId" type="text" required></label>
+                    <label>Hạn trả<input id="borrowDueDate" type="date" required></label>
+                    <label>Tình trạng lúc mượn<input id="borrowCondition" type="text" placeholder="New"></label>
+                    <button class="btn" type="submit">Gửi yêu cầu mượn</button>
+                </form>
+                <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
+                <div class="panel-head" style="margin-bottom:10px;">
+                    <h3>Tra sach</h3>
+                </div>
+                <form id="returnForm" class="form-grid single">
+                    <label>Loan ID<input id="returnLoanId" type="text" required></label>
+                    <label>Book ID<input id="returnBookId" type="text" required></label>
+                    <label>Tình trạng khi trả<input id="returnCondition" type="text" placeholder="Good"></label>
+                    <button class="btn btn-soft" type="submit">Trả sách</button>
+                </form>
+            </section>
+
+            <section class="panel col-7">
+                <div class="panel-head">
+                    <div>
+                        <h2>Phiếu mượn của tôi</h2>
+                        <p id="loanSummary" class="muted">Đang tải...</p>
+                    </div>
+                    <button id="refreshLoansBtn" class="btn btn-soft" type="button">Tải lại</button>
+                </div>
+                <div id="loansList" class="list"></div>
+            </section>
+
+            <section class="panel col-5">
+                <div class="panel-head">
+                    <div>
+                        <h2>Thông báo & Realtime</h2>
+                        <p id="notificationSummary" class="muted">Đang tải...</p>
+                    </div>
+                    <button id="refreshNotificationsBtn" class="btn btn-soft" type="button">Tải lại</button>
+                </div>
+                <div id="socketEvents" class="list socket-log"></div>
+                <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">
+                <div id="notificationsList" class="list"></div>
+            </section>
+        </section>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/shared.js"></script>
+    <script src="/js/user.js"></script>
+</body>
+</html>

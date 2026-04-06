@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký | Library System</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main class="auth-shell">
+        <section class="auth-card">
+            <h1>Tạo tài khoản mới</h1>
+            <p>Đăng ký nhanh để bắt đầu sử dụng hệ thống.</p>
+
+            <form id="registerForm">
+                <label>
+                    Họ tên
+                    <input id="fullName" type="text" required>
+                </label>
+                <label>
+                    Username
+                    <input id="username" type="text" required>
+                </label>
+                <label>
+                    Email
+                    <input id="email" type="email" required>
+                </label>
+                <label>
+                    Vai trò
+                    <select id="role" required>
+                        <option value="user">user</option>
+                        <option value="admin">admin</option>
+                    </select>
+                </label>
+                <label>
+                    Password
+                    <input id="password" type="password" minlength="6" required>
+                </label>
+                <button class="btn" type="submit">Đăng ký</button>
+            </form>
+
+            <p class="auth-foot">Đã có tài khoản? <a href="/login.html">Đăng nhập</a></p>
+        </section>
+    </main>
+
+    <script src="/js/shared.js"></script>
+    <script src="/js/register.js"></script>
+</body>
+</html>
