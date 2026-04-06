@@ -20,6 +20,11 @@ let bookSchema = mongoose.Schema({
     ref: 'category',
     required: true
   },
+  author_id: {
+    type: mongoose.Types.ObjectId,
+    ref: 'author',
+    required: true
+  },
   published_year: {
     type: Number
   },
@@ -30,6 +35,15 @@ let bookSchema = mongoose.Schema({
   available_copies: {
     type: Number,
     default: 0
+  },
+  upload_id: {
+    type: mongoose.Types.ObjectId,
+    ref: 'upload',
+    default: null
+  },
+  cover_url: {
+    type: String,
+    default: ''
   }
 })
 
