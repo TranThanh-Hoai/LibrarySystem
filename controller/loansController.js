@@ -120,6 +120,40 @@ async function returnBook(payload, currentUser) {
   };
 }
 
+async function getLoans(currentUser, options = {}) {
+  const isAdmin = currentUser?.role_id?.name === 'admin';
+  const query = {};
+
+  if (!isAdmin || options.onlyCurrentUser) {
+    query.user_id = currentUser?._id;
+  }
+
+  const loans = await Loan.find(query)
+    .populate('user_id', 'username full_name email')
+    .sort({ loan_date: -1 })
+    .lean();
+
+  const loanIds = loans.map((loan) => loan._id);
+  const details = await LoanDetail.find({ loan_id: { $in: loanIds } })
+    .populate('book_id', 'title isbn cover_url')
+    .lean();
+
+  const detailMap = details.reduce((acc, detail) => {
+    const key = String(detail.loan_id);
+    if (!acc[key]) {
+      acc[key] = [];
+    }
+    acc[key].push(detail);
+    return acc;
+  }, {});
+
+  return loans.map((loan) => ({
+    ...loan,
+    details: detailMap[String(loan._id)] || []
+  }));
+}
+
 module.exports = {
-  returnBook
+  returnBook,
+  getLoans
 };

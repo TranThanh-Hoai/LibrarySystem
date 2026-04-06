@@ -4,6 +4,36 @@ const loansController = require('../controller/loansController');
 const loanController = require('../controller/loanController');
 const { authenticateToken } = require('../utils/auth');
 
+router.get('/', authenticateToken, async function (req, res) {
+  try {
+    const data = await loansController.getLoans(req.user, { onlyCurrentUser: false });
+    return res.status(200).json({
+      success: true,
+      data
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+router.get('/my-loans', authenticateToken, async function (req, res) {
+  try {
+    const data = await loansController.getLoans(req.user, { onlyCurrentUser: true });
+    return res.status(200).json({
+      success: true,
+      data
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
 router.post('/return-book', authenticateToken, async function (req, res) {
   try {
     const result = await loansController.returnBook(req.body, req.user);

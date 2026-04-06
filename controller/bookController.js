@@ -37,6 +37,7 @@ const getAllBooks = async ({ page = 1, limit = 10, search = '' }) => {
   // Get books with pagination
   const books = await Book
     .find(filter)
+    .populate('upload_id', 'file_name file_path uploaded_at')
     .populate('publisher_id', 'name address phone')
     .populate('category_id', 'name description')
     .populate('author_id', 'name bio')
@@ -61,6 +62,7 @@ const getAllBooks = async ({ page = 1, limit = 10, search = '' }) => {
 const getBookById = async (id) => {
   const book = await Book
     .findById(id)
+    .populate('upload_id', 'file_name file_path uploaded_at')
     .populate('publisher_id', 'name address phone')
     .populate('category_id', 'name description')
     .populate('author_id', 'name bio');
@@ -125,6 +127,7 @@ const createBook = async (bookData) => {
   // Populate references before sending response
   const populatedBook = await Book
     .findById(savedBook._id)
+    .populate('upload_id', 'file_name file_path uploaded_at')
     .populate('publisher_id', 'name address phone')
     .populate('category_id', 'name description')
     .populate('author_id', 'name bio');
@@ -173,6 +176,7 @@ const updateBook = async (id, updateData) => {
 
   const updatedBook = await Book
     .findByIdAndUpdate(id, updateData, { new: true, runValidators: true })
+    .populate('upload_id', 'file_name file_path uploaded_at')
     .populate('publisher_id', 'name address phone')
     .populate('category_id', 'name description')
     .populate('author_id', 'name bio');
@@ -220,10 +224,22 @@ const uploadBookCover = async (bookId, file) => {
 
   const savedUpload = await uploadRecord.save();
 
+  const filePath = `/uploads/${file.filename}`;
+
+  await Book.findByIdAndUpdate(
+    bookId,
+    {
+      upload_id: savedUpload._id,
+      cover_url: filePath
+    },
+    { new: true }
+  );
+
   return {
     upload_id: savedUpload._id,
     file_name: savedUpload.file_name,
     file_path: savedUpload.file_path,
+    cover_url: filePath,
     uploaded_at: savedUpload.uploaded_at
   };
 };
