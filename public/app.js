@@ -649,7 +649,7 @@ async function handleBookSubmit(event) {
     event.preventDefault();
 
     if (state.user?.role !== "admin") {
-        throw new Error("Only admin can manage books");
+        throw new Error("Chỉ admin mới có quyền quản lý sách");
     }
 
     const bookId = elements.bookId.value;
@@ -663,20 +663,20 @@ async function handleBookSubmit(event) {
             body
         });
         savedBookId = getData(payload)?._id || bookId;
-        showToast("Book updated successfully");
+        showToast("Cập nhật sách thành công");
     } else {
         const payload = await api.request("/books", {
             method: "POST",
             body
         });
         savedBookId = getData(payload)?._id || "";
-        showToast("Book created successfully");
+        showToast("Thêm sách mới thành công");
     }
 
     if (selectedCover && savedBookId) {
         const uploadData = await uploadCoverForBook(savedBookId, selectedCover);
-        elements.coverUploadInfo.textContent = `Da upload: ${uploadData.file_name}`;
-        showToast("Book saved and cover uploaded successfully");
+        elements.coverUploadInfo.textContent = `Đã upload: ${uploadData.file_name}`;
+        showToast("Lưu sách và tải lên ảnh bìa thành công");
     }
 
     await loadBooks();
@@ -703,16 +703,16 @@ async function handleCoverUpload() {
     const file = elements.bookCoverFile.files[0];
 
     if (!bookId) {
-        throw new Error("Please select a book before uploading an image");
+        throw new Error("Vui lòng chọn sách trước khi tải lên ảnh");
     }
 
     if (!file) {
-        throw new Error("Please choose an image file");
+        throw new Error("Vui lòng chọn tệp ảnh");
     }
 
     const data = await uploadCoverForBook(bookId, file);
-    elements.coverUploadInfo.textContent = `Da upload: ${data.file_name}`;
-    showToast("Cover uploaded successfully");
+    elements.coverUploadInfo.textContent = `Đã upload: ${data.file_name}`;
+    showToast("Tải lên ảnh bìa thành công");
     await loadBooks();
 }
 
@@ -818,7 +818,7 @@ window.app = {
         elements.bookYear.value = book.published_year || "";
         elements.bookQuantity.value = book.quantity || 0;
         elements.bookAvailableCopies.value = book.available_copies || 0;
-        elements.coverUploadInfo.textContent = book.cover_url ? `Anh hien tai: ${book.cover_url}` : "";
+        elements.coverUploadInfo.textContent = book.cover_url ? `Ảnh hiện tại: ${book.cover_url}` : "";
         elements.deleteBookBtn.classList.remove("hidden");
         elements.uploadCoverBtn.classList.remove("hidden");
         document.getElementById("adminPanel").scrollIntoView({ behavior: "smooth" });
@@ -826,7 +826,7 @@ window.app = {
 
     markNotificationRead(notificationId) {
         handleMarkNotificationRead(notificationId).catch((error) => {
-            showToast(error.message || "Khong cap nhat duoc thong bao", "error");
+            showToast(error.message || "Không cập nhật được thông báo", "error");
         });
     }
 };

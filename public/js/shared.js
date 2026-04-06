@@ -1,4 +1,4 @@
-﻿(function bootstrapLibraryApp() {
+(function bootstrapLibraryApp() {
     const STORAGE_TOKEN = "token";
     const STORAGE_USER = "user";
     const API_BASE = "/api";
@@ -71,7 +71,7 @@
             if (response.status === 401 || response.status === 403) {
                 clearSession();
             }
-            throw new Error(normalizeError(payload, "Yeu cau that bai"));
+            throw new Error(normalizeError(payload, "Yêu cầu thất bại"));
         }
 
         return payload;
@@ -172,22 +172,22 @@
 
         socket.on("connect", function onConnect() {
             if (typeof onStatus === "function") onStatus("online");
-            if (typeof onEvent === "function") onEvent("Ket noi thanh cong", "Socket ID: " + socket.id);
+            if (typeof onEvent === "function") onEvent("Kết nối thành công", "Socket ID: " + socket.id);
         });
 
         socket.on("disconnect", function onDisconnect(reason) {
             if (typeof onStatus === "function") onStatus("offline");
-            if (typeof onEvent === "function") onEvent("Da ngat ket noi", reason || "Khong ro ly do");
+            if (typeof onEvent === "function") onEvent("Đã ngắt kết nối", reason || "Không rõ lý do");
         });
 
         socket.on("connect_error", function onError(error) {
             if (typeof onStatus === "function") onStatus("offline");
-            if (typeof onEvent === "function") onEvent("Ket noi that bai", error && error.message ? error.message : "Khong ro loi");
+            if (typeof onEvent === "function") onEvent("Kết nối thất bại", error && error.message ? error.message : "Không rõ lỗi");
         });
 
         socket.on("notification", function onSocketNotification(notification) {
             if (typeof onNotification === "function") onNotification(notification);
-            if (typeof onEvent === "function") onEvent("Thong bao moi", notification && notification.message ? notification.message : "Co thong bao moi");
+            if (typeof onEvent === "function") onEvent("Thông báo mới", notification && notification.message ? notification.message : "Có thông báo mới");
         });
 
         return socket;

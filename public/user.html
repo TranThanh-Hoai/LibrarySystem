@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -11,35 +11,35 @@
         <header class="topbar">
             <div class="title-group">
                 <h1>User Dashboard</h1>
-                <p class="subtitle">Tim sach, muon/tra sach, theo doi thong bao realtime de thao tac nhanh.</p>
+                <p class="subtitle">Tìm sách, mượn/trả sách, theo dõi thông báo realtime để thao tác nhanh.</p>
             </div>
             <div class="topbar-actions">
                 <span id="sessionInfo" class="pill">-</span>
                 <span id="socketStatus" class="pill offline">Offline</span>
-                <button id="logoutBtn" class="btn btn-soft" type="button">Dang xuat</button>
+                <button id="logoutBtn" class="btn btn-soft" type="button">Đăng xuất</button>
             </div>
         </header>
 
         <section class="overview">
             <article class="card">
-                <div class="label">Sach hien thi</div>
+                <div class="label">Sách hiển thị</div>
                 <div id="metricBooks" class="value">0</div>
-                <div class="hint">Da loc theo tim kiem + the loai</div>
+                <div class="hint">Đã lọc theo tìm kiếm + thể loại</div>
             </article>
             <article class="card">
-                <div class="label">Phieu muon cua toi</div>
+                <div class="label">Phiếu mượn của tôi</div>
                 <div id="metricLoans" class="value">0</div>
-                <div class="hint">Lay tu endpoint my-loans</div>
+                <div class="hint">Lấy từ endpoint my-loans</div>
             </article>
             <article class="card">
-                <div class="label">Thong bao chua doc</div>
+                <div class="label">Thông báo chưa đọc</div>
                 <div id="metricNotifications" class="value">0</div>
-                <div class="hint">Cap nhat realtime qua socket</div>
+                <div class="hint">Cập nhật realtime qua socket</div>
             </article>
             <article class="card">
-                <div class="label">Tinh trang ket noi</div>
+                <div class="label">Tình trạng kết nối</div>
                 <div id="metricSocket" class="value">Offline</div>
-                <div class="hint">Dang cho ket noi</div>
+                <div class="hint">Đang chờ kết nối</div>
             </article>
         </section>
 
@@ -47,26 +47,26 @@
             <section class="panel col-8">
                 <div class="panel-head">
                     <div>
-                        <h2>Kho sach</h2>
-                        <p id="bookSummary" class="muted">Dang tai...</p>
+                        <h2>Kho sách</h2>
+                        <p id="bookSummary" class="muted">Đang tải...</p>
                     </div>
-                    <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div class="filters">
-                    <label>Tim kiem<input id="searchInput" type="search" placeholder="Ten sach, tac gia, ISBN..."></label>
-                    <label>The loai<select id="categoryFilter"><option value="">Tat ca</option></select></label>
+                    <label>Tìm kiếm<input id="searchInput" type="search" placeholder="Tên sách, tác giả, ISBN..."></label>
+                    <label>Thể loại<select id="categoryFilter"><option value="">Tất cả</option></select></label>
                 </div>
                 <div class="table-wrap">
                     <table>
                         <thead>
                             <tr>
-                                <th>Tieu de</th>
+                                <th>Tiêu đề</th>
                                 <th>ISBN</th>
-                                <th>Tac gia</th>
-                                <th>The loai</th>
+                                <th>Tác giả</th>
+                                <th>Thể loại</th>
                                 <th>NXB</th>
-                                <th>Con lai</th>
-                                <th>Thao tac</th>
+                                <th>Còn lại</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="booksTableBody"></tbody>
@@ -80,9 +80,9 @@
                 </div>
                 <form id="borrowForm" class="form-grid single">
                     <label>Book ID<input id="borrowBookId" type="text" required></label>
-                    <label>Han tra<input id="borrowDueDate" type="date" required></label>
-                    <label>Tinh trang luc muon<input id="borrowCondition" type="text" placeholder="New"></label>
-                    <button class="btn" type="submit">Gui yeu cau muon</button>
+                    <label>Hạn trả<input id="borrowDueDate" type="date" required></label>
+                    <label>Tình trạng lúc mượn<input id="borrowCondition" type="text" placeholder="New"></label>
+                    <button class="btn" type="submit">Gửi yêu cầu mượn</button>
                 </form>
                 <hr style="border:none;border-top:1px solid var(--border);margin:14px 0;">
                 <div class="panel-head" style="margin-bottom:10px;">
@@ -91,18 +91,18 @@
                 <form id="returnForm" class="form-grid single">
                     <label>Loan ID<input id="returnLoanId" type="text" required></label>
                     <label>Book ID<input id="returnBookId" type="text" required></label>
-                    <label>Tinh trang khi tra<input id="returnCondition" type="text" placeholder="Good"></label>
-                    <button class="btn btn-soft" type="submit">Tra sach</button>
+                    <label>Tình trạng khi trả<input id="returnCondition" type="text" placeholder="Good"></label>
+                    <button class="btn btn-soft" type="submit">Trả sách</button>
                 </form>
             </section>
 
             <section class="panel col-7">
                 <div class="panel-head">
                     <div>
-                        <h2>Phieu muon cua toi</h2>
-                        <p id="loanSummary" class="muted">Dang tai...</p>
+                        <h2>Phiếu mượn của tôi</h2>
+                        <p id="loanSummary" class="muted">Đang tải...</p>
                     </div>
-                    <button id="refreshLoansBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshLoansBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div id="loansList" class="list"></div>
             </section>
@@ -110,10 +110,10 @@
             <section class="panel col-5">
                 <div class="panel-head">
                     <div>
-                        <h2>Thong bao & Realtime</h2>
-                        <p id="notificationSummary" class="muted">Dang tai...</p>
+                        <h2>Thông báo & Realtime</h2>
+                        <p id="notificationSummary" class="muted">Đang tải...</p>
                     </div>
-                    <button id="refreshNotificationsBtn" class="btn btn-soft" type="button">Tai lai</button>
+                    <button id="refreshNotificationsBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div id="socketEvents" class="list socket-log"></div>
                 <hr style="border:none;border-top:1px solid var(--border);margin:12px 0;">

@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", function initUserDashboard() {
+document.addEventListener("DOMContentLoaded", function initUserDashboard() {
     const app = window.LibraryApp;
     const session = app.requireAuth("user");
     if (!session) return;
@@ -53,7 +53,7 @@
     function setSocketStatus(status) {
         state.socketStatus = status;
         el.socketStatus.className = "pill " + status;
-        el.socketStatus.textContent = status === "online" ? "Online" : status === "connecting" ? "Dang ket noi" : "Offline";
+        el.socketStatus.textContent = status === "online" ? "Online" : status === "connecting" ? "Đang kết nối" : "Offline";
         el.metricSocket.textContent = status === "online" ? "Online" : status === "connecting" ? "Connecting" : "Offline";
     }
 
@@ -65,7 +65,7 @@
 
     function renderSocketEvents() {
         if (!state.socketEvents.length) {
-            el.socketEvents.innerHTML = '<div class="empty">Chua co su kien ket noi.</div>';
+            el.socketEvents.innerHTML = '<div class="empty">Chưa có sự kiện kết nối.</div>';
             return;
         }
 
@@ -74,7 +74,7 @@
                 '<article class="list-item">' +
                 '<h4>' + app.escapeHtml(item.title) + '</h4>' +
                 '<div class="meta">' +
-                '<span>' + app.escapeHtml(item.detail || "Khong co chi tiet") + '</span>' +
+                '<span>' + app.escapeHtml(item.detail || "Không có chi tiết") + '</span>' +
                 '<span>' + app.toVNDateTime(item.at) + '</span>' +
                 '</div>' +
                 '</article>';
@@ -107,7 +107,7 @@
     }
 
     function renderCategoryFilter() {
-        el.categoryFilter.innerHTML = ['<option value="">Tat ca</option>']
+        el.categoryFilter.innerHTML = ['<option value="">Tất cả</option>']
             .concat(state.categories.map(function mapCategory(category) {
                 return '<option value="' + category._id + '">' + app.escapeHtml(category.name) + '</option>';
             })).join("");
@@ -116,11 +116,11 @@
 
     function renderBooks() {
         const books = getFilteredBooks();
-        el.bookSummary.textContent = "Tong " + books.length + " / " + state.books.length + " sach";
+        el.bookSummary.textContent = "Tổng " + books.length + " / " + state.books.length + " sách";
         updateMetrics();
 
         if (!books.length) {
-            el.booksTableBody.innerHTML = '<tr><td colspan="7"><div class="empty">Khong co sach phu hop bo loc.</div></td></tr>';
+            el.booksTableBody.innerHTML = '<tr><td colspan="7"><div class="empty">Không có sách phù hợp bộ lọc.</div></td></tr>';
             return;
         }
 
@@ -129,7 +129,7 @@
             const stockClass = available < 3 ? "tag low" : "tag";
             const cover = book.cover_url
                 ? '<img class="book-cover-inline" src="' + app.escapeHtml(book.cover_url) + '" alt="' + app.escapeHtml(book.title) + '">'
-                : '<span class="muted">Chua co anh bia</span>';
+                : '<span class="muted">Chưa có ảnh bìa</span>';
 
             return '' +
                 '<tr>' +
@@ -139,17 +139,17 @@
                 '<td>' + app.escapeHtml(book.category_id && book.category_id.name) + '</td>' +
                 '<td>' + app.escapeHtml(book.publisher_id && book.publisher_id.name) + '</td>' +
                 '<td><span class="' + stockClass + '">' + available + '/' + Number(book.quantity || 0) + '</span></td>' +
-                '<td><button class="btn btn-soft" type="button" onclick="window.UserUI.fillBorrow(\'' + book._id + '\')">Muon</button></td>' +
+                '<td><button class="btn btn-soft" type="button" onclick="window.UserUI.fillBorrow(\'' + book._id + '\')">Mượn</button></td>' +
                 '</tr>';
         }).join("");
     }
 
     function renderLoans() {
-        el.loanSummary.textContent = state.loans.length + " phieu muon";
+        el.loanSummary.textContent = state.loans.length + " phiếu mượn";
         updateMetrics();
 
         if (!state.loans.length) {
-            el.loansList.innerHTML = '<div class="empty">Ban chua co phieu muon nao.</div>';
+            el.loansList.innerHTML = '<div class="empty">Bạn chưa có phiếu mượn nào.</div>';
             return;
         }
 
@@ -161,8 +161,8 @@
                     '<div class="meta" style="margin-top:6px;">' +
                     '<strong>' + app.escapeHtml(title) + '</strong>' +
                     '<span>Book ID: ' + app.escapeHtml(bookId) + '</span>' +
-                    '<span>Ngay tra: ' + app.toVNDate(detail.return_date) + '</span>' +
-                    '<button class="btn btn-soft" type="button" onclick="window.UserUI.fillReturn(\'' + loan._id + '\', \'' + bookId + '\')">Dien vao form tra</button>' +
+                    '<span>Ngày trả: ' + app.toVNDate(detail.return_date) + '</span>' +
+                    '<button class="btn btn-soft" type="button" onclick="window.UserUI.fillReturn(\'' + loan._id + '\', \'' + bookId + '\')">Điền vào form trả</button>' +
                     '</div>';
             }).join("");
 
@@ -170,9 +170,9 @@
                 '<article class="list-item">' +
                 '<h3>Loan ' + app.escapeHtml(loan._id) + '</h3>' +
                 '<div class="meta">' +
-                '<span>Ngay muon: ' + app.toVNDate(loan.loan_date) + '</span>' +
-                '<span>Han tra: ' + app.toVNDate(loan.due_date) + '</span>' +
-                '<span>Trang thai: ' + app.escapeHtml(loan.status) + '</span>' +
+                '<span>Ngày mượn: ' + app.toVNDate(loan.loan_date) + '</span>' +
+                '<span>Hạn trả: ' + app.toVNDate(loan.due_date) + '</span>' +
+                '<span>Trạng thái: ' + app.escapeHtml(loan.status) + '</span>' +
                 '</div>' +
                 details +
                 '</article>';
@@ -181,23 +181,23 @@
 
     function renderNotifications() {
         const unread = unreadCount();
-        el.notificationSummary.textContent = "Tong " + state.notifications.length + " thong bao, " + unread + " chua doc";
+        el.notificationSummary.textContent = "Tổng " + state.notifications.length + " thông báo, " + unread + " chưa đọc";
         updateMetrics();
 
         if (!state.notifications.length) {
-            el.notificationsList.innerHTML = '<div class="empty">Chua co thong bao.</div>';
+            el.notificationsList.innerHTML = '<div class="empty">Chưa có thông báo.</div>';
             return;
         }
 
         el.notificationsList.innerHTML = state.notifications.map(function mapNotification(item) {
             return '' +
                 '<article class="list-item">' +
-                '<h4>' + app.escapeHtml(item.type || "Thong bao") + '</h4>' +
+                '<h4>' + app.escapeHtml(item.type || "Thông báo") + '</h4>' +
                 '<div class="meta">' +
                 '<span>' + app.escapeHtml(item.message) + '</span>' +
-                '<span>Trang thai: ' + (item.is_read ? "Da doc" : "Chua doc") + '</span>' +
+                '<span>Trạng thái: ' + (item.is_read ? "Đã đọc" : "Chưa đọc") + '</span>' +
                 '<span>' + app.toVNDateTime(item.createdAt) + '</span>' +
-                (item.is_read ? "" : '<button class="btn btn-soft" type="button" onclick="window.UserUI.markRead(\'' + item._id + '\')">Danh dau da doc</button>') +
+                (item.is_read ? "" : '<button class="btn btn-soft" type="button" onclick="window.UserUI.markRead(\'' + item._id + '\')">Đánh dấu đã đọc</button>') +
                 '</div>' +
                 '</article>';
         }).join("");
@@ -240,7 +240,7 @@
                 }]
             })
         });
-        app.showToast("Tao phieu muon thanh cong", "success");
+        app.showToast("Tạo phiếu mượn thành công", "success");
         el.borrowForm.reset();
 
         const dueDate = new Date();
@@ -260,7 +260,7 @@
                 condition: el.returnCondition.value.trim()
             })
         });
-        app.showToast("Tra sach thanh cong", "success");
+        app.showToast("Trả sách thành công", "success");
         el.returnForm.reset();
         await Promise.all([loadBooks(), loadLoans(), loadNotifications()]);
     }
@@ -300,7 +300,7 @@
             try {
                 await handler(event);
             } catch (error) {
-                app.showToast(error.message || "Co loi xay ra", "error");
+                app.showToast(error.message || "Có lỗi xảy ra", "error");
             }
         };
     }
@@ -317,7 +317,7 @@
         },
         markRead: function markReadAction(notificationId) {
             markRead(notificationId).catch(function onError(error) {
-                app.showToast(error.message || "Khong cap nhat duoc thong bao", "error");
+                app.showToast(error.message || "Không cập nhật được thông báo", "error");
             });
         }
     };
@@ -341,7 +341,7 @@
             function onNotification(notification) {
                 state.notifications.unshift(notification);
                 renderNotifications();
-                app.showToast(notification.message || "Co thong bao moi", "success");
+                app.showToast(notification.message || "Có thông báo mới", "success");
             },
             setSocketStatus,
             addSocketEvent
@@ -352,6 +352,6 @@
     }
 
     firstLoad().catch(function onError(error) {
-        app.showToast(error.message || "Khong tai duoc du lieu dashboard", "error");
+        app.showToast(error.message || "Không tải được dữ liệu dashboard", "error");
     });
 });
