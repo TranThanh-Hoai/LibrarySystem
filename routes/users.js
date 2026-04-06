@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getAllUsers, getUserById, createUser, updateUser, deleteUser } = require('../controller/userController');
-const { authenticateToken, authorizeRole } = require('../ultis/auth');
+const { authenticateToken, authorizeRole } = require('../utils/auth');
 
 router.get('/', authenticateToken, authorizeRole(['admin']), async (req, res) => {
   try {

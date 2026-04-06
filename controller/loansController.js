@@ -2,11 +2,13 @@ const Loan = require('../schemas/Loan');
 const LoanDetail = require('../schemas/LoanDetail');
 const Book = require('../schemas/Book');
 const Fine = require('../schemas/Fine');
+const { createAndSendNotification } = require('./notificationController');
 
 const FINE_PER_DAY = 5000;
 
-async function returnBook(payload) {
+async function returnBook(payload, currentUser) {
   const { loan_id, book_id, condition } = payload;
+  const isAdmin = currentUser?.role_id?.name === 'admin';
 
   if (!loan_id || !book_id) {
     return {
@@ -22,6 +24,14 @@ async function returnBook(payload) {
       success: false,
       statusCode: 404,
       message: 'Khong tim thay phieu muon'
+    };
+  }
+
+  if (!isAdmin && String(loan.user_id) !== String(currentUser?._id)) {
+    return {
+      success: false,
+      statusCode: 403,
+      message: 'Ban khong co quyen tra phieu muon nay'
     };
   }
 
@@ -68,6 +78,7 @@ async function returnBook(payload) {
         reason: `Tre han ${lateDays} ngay`,
         is_paid: false
       });
+      createdFine.isNewlyCreated = true;
     } else {
       createdFine = existedLateFine;
     }
@@ -83,6 +94,20 @@ async function returnBook(payload) {
     loan.status = statusValues[2];
   }
   await loan.save();
+
+  await createAndSendNotification(
+    loan.user_id,
+    `Tráº£ sÃ¡ch thÃ nh cÃ´ng cuá»‘n ID: ${book_id}.`,
+    'Há»‡ thá»‘ng'
+  );
+
+  if (createdFine && createdFine.isNewlyCreated) {
+    await createAndSendNotification(
+      loan.user_id,
+      `Báº¡n cÃ³ khoáº£n pháº¡t má»›i: ${createdFine.amount}Ä‘ cho lÃ½ do: ${createdFine.reason}.`,
+      'Nháº¯c tráº£ sÃ¡ch'
+    );
+  }
 
   return {
     success: true,

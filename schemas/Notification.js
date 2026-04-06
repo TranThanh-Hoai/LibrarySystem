@@ -3,8 +3,7 @@ let mongoose = require('mongoose');
 let notificationSchema = mongoose.Schema({
   user_id: {
     type: mongoose.Types.ObjectId,
-    ref: 'user',
-    required: true
+    ref: 'user'
   },
   message: {
     type: String,
