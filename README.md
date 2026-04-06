@@ -51,7 +51,7 @@ Hệ thống quản lý thư viện (Library Management System) cung cấp các 
 {
   "full_name": "string",
   "email": "string",
-  "role_name": "admin" | "thủ thư" | "người dùng"
+  "role_name": "admin" | "người dùng"
 }
 ```
 
