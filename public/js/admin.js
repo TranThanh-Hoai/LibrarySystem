@@ -375,7 +375,7 @@ document.addEventListener("DOMContentLoaded", function initAdminDashboard() {
             });
             const data = app.getData(updated);
             savedId = data && data._id ? data._id : id;
-            app.showToast("Cap nhat sach thanh cong", "success");
+            app.showToast("Cập nhật sách thành công", "success");
         } else {
             const created = await app.request("/books", {
                 method: "POST",

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Dashboard | Library System</title>
     <link rel="stylesheet" href="/style.css">
 </head>
+
 <body>
     <div class="page">
         <header class="topbar">
@@ -53,8 +55,11 @@
                     <button id="refreshBooksBtn" class="btn btn-soft" type="button">Tải lại</button>
                 </div>
                 <div class="filters">
-                    <label>Tìm kiếm<input id="searchInput" type="search" placeholder="Tên sách, tác giả, ISBN..."></label>
-                    <label>Thể loại<select id="categoryFilter"><option value="">Tất cả</option></select></label>
+                    <label>Tìm kiếm<input id="searchInput" type="search"
+                            placeholder="Tên sách, tác giả, ISBN..."></label>
+                    <label>Thể loại<select id="categoryFilter">
+                            <option value="">Tất cả</option>
+                        </select></label>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -127,4 +132,5 @@
     <script src="/js/shared.js"></script>
     <script src="/js/user.js"></script>
 </body>
+
 </html>
