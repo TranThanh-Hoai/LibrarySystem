@@ -97,15 +97,15 @@ async function returnBook(payload, currentUser) {
 
   await createAndSendNotification(
     loan.user_id,
-    `Tráº£ sÃ¡ch thÃ nh cÃ´ng cuá»‘n ID: ${book_id}.`,
-    'Há»‡ thá»‘ng'
+    `Trả sách thành công cuốn ID: ${book_id}.`,
+    'Hệ thống'
   );
 
   if (createdFine && createdFine.isNewlyCreated) {
     await createAndSendNotification(
       loan.user_id,
-      `Báº¡n cÃ³ khoáº£n pháº¡t má»›i: ${createdFine.amount}Ä‘ cho lÃ½ do: ${createdFine.reason}.`,
-      'Nháº¯c tráº£ sÃ¡ch'
+      `Bạn có khoản phạt mới: ${createdFine.amount}đ cho lý do: ${createdFine.reason}.`,
+      'Nhắc trả sách'
     );
   }
 

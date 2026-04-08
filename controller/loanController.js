@@ -64,8 +64,8 @@ const borrowBook = async (req) => {
 
     await createAndSendNotification(
       effectiveUserId,
-      `MÆ°á»£n sÃ¡ch thÃ nh cÃ´ng! Háº¡n tráº£ lÃ : ${new Date(due_date).toLocaleDateString()}.`,
-      'Há»‡ thá»‘ng'
+      `Mượn sách thành công! Hạn trả là: ${new Date(due_date).toLocaleDateString()}.`,
+      'Hệ thống'
     );
 
     return {
