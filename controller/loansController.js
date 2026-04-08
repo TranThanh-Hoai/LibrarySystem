@@ -14,7 +14,7 @@ async function returnBook(payload, currentUser) {
     return {
       success: false,
       statusCode: 400,
-      message: 'loan_id va book_id la bat buoc'
+      message: 'loan_id và book_id là bắt buộc'
     };
   }
 
@@ -23,7 +23,7 @@ async function returnBook(payload, currentUser) {
     return {
       success: false,
       statusCode: 404,
-      message: 'Khong tim thay phieu muon'
+      message: 'Không tìm thấy phiếu mượn'
     };
   }
 
@@ -31,7 +31,7 @@ async function returnBook(payload, currentUser) {
     return {
       success: false,
       statusCode: 403,
-      message: 'Ban khong co quyen tra phieu muon nay'
+      message: 'Bạn không có quyền trả phiếu mượn này'
     };
   }
 
@@ -40,7 +40,7 @@ async function returnBook(payload, currentUser) {
     return {
       success: false,
       statusCode: 404,
-      message: 'Khong tim thay chi tiet muon sach'
+      message: 'Không tìm thấy chi tiết mượn sách'
     };
   }
 
@@ -48,7 +48,7 @@ async function returnBook(payload, currentUser) {
     return {
       success: false,
       statusCode: 400,
-      message: 'Sach nay da duoc tra truoc do'
+      message: 'Sách này đã được trả trước đó'
     };
   }
 
@@ -68,14 +68,14 @@ async function returnBook(payload, currentUser) {
     const lateDays = Math.ceil((now.getTime() - dueDate.getTime()) / (1000 * 60 * 60 * 24));
     const existedLateFine = await Fine.findOne({
       loan_id,
-      reason: { $regex: /^Tre han/i }
+      reason: { $regex: /^Trễ hạn/i }
     });
 
     if (!existedLateFine) {
       createdFine = await Fine.create({
         loan_id,
         amount: lateDays * FINE_PER_DAY,
-        reason: `Tre han ${lateDays} ngay`,
+        reason: `Trễ hạn ${lateDays} ngày`,
         is_paid: false
       });
       createdFine.isNewlyCreated = true;
@@ -112,7 +112,7 @@ async function returnBook(payload, currentUser) {
   return {
     success: true,
     statusCode: 200,
-    message: 'Tra sach thanh cong',
+    message: 'Trả sách thành công',
     data: {
       loan_detail: loanDetail,
       fine: createdFine
